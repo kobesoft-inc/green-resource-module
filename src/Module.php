@@ -47,12 +47,27 @@ class Module
      */
     private static function insertComponents(array $array, array $insert, ?string $before, ?string $after): array
     {
+        // 挿入位置の指定をチェックする
         if (($before !== null) == ($after !== null)) {
             throw new RuntimeException('Either before or after must be specified.');
         }
+
+        // 配列のインデックスを振り直す
+        $array = array_values($array);
+
+        // beforeの指定が*の場合は配列の先頭に追加する
+        if ($before == '*') {
+            return array_merge($insert, $array);
+        }
+
+        // afterの指定が*の場合は配列の最後に追加する
+        if ($after == '*') {
+            return array_merge($array, $insert);
+        }
+
         $name = $before ?? $after;
         $offset = $before !== null ? 0 : 1;
-        foreach (array_values($array) as $i => $component) {
+        foreach ($array as $i => $component) {
             // ActionGroupの場合の再帰的な処理
             if ($component instanceof ActionGroup) {
                 if ($children = $component->getActions()) {
