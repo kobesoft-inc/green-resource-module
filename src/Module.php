@@ -46,12 +46,14 @@ class Module
      */
     private static function insertComponents(array $array, ?string $before, array $insert): array
     {
-        if ($before == null) {
-            return $array + $insert;
-        }
         $result = [];
         foreach ($array as $component) {
-            if ($component instanceof Component) {
+            if ($component instanceof \Filament\Tables\Actions\ActionGroup ||
+                $component instanceof \Filament\Actions\ActionGroup) {
+                if ($children = $component->getActions()) {
+                    $component->actions(self::insertComponents($children, $before, $insert));
+                }
+            } else if ($component instanceof Component) {
                 if ($children = $component->getChildComponents()) {
                     $component->childComponents(self::insertComponents($children, $before, $insert));
                 }
@@ -62,6 +64,11 @@ class Module
                 }
             }
             $result[] = $component;
+        }
+        if ($before == null) {
+            foreach ($insert as $item) {
+                $result[] = $item;
+            }
         }
         return $result;
     }
