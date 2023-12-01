@@ -40,48 +40,45 @@ class Module
      * コンポーネントを挿入する
      *
      * @param mixed $array 対象のコンポーネントの配列
-     * @param ?string $before 挿入位置のIDまたは名前(nullなら最後に追加)
+     * @param ?string $before 挿入位置のIDまたは名前
      * @param array $insert 挿入するコンポーネントの配列
      * @return array 結果のコンポーネントの配列
      */
     private static function insertComponents(array $array, ?string $before, array $insert): array
     {
-        $result = [];
-        foreach ($array as $component) {
-            if ($component instanceof \Filament\Tables\Actions\ActionGroup ||
-                $component instanceof \Filament\Actions\ActionGroup) {
+        foreach (array_values($array) as $i => $component) {
+            // ActionGroupの場合の再帰的な処理
+            if ($component instanceof \Filament\Actions\ActionGroup) {
                 if ($children = $component->getActions()) {
                     $component->actions(self::insertComponents($children, $before, $insert));
                 }
-            } else if ($component instanceof Component) {
+            }
+
+            // Componentの場合の再帰的な処理
+            if ($component instanceof Component) {
                 if ($children = $component->getChildComponents()) {
                     $component->childComponents(self::insertComponents($children, $before, $insert));
                 }
             }
+
+            // 挿入位置のコンポーネントの前に挿入する
             if (method_exists($component, 'getName') && $component->getName() == $before) {
-                foreach ($insert as $item) {
-                    $result[] = $item;
-                }
-            }
-            $result[] = $component;
-        }
-        if ($before == null) {
-            foreach ($insert as $item) {
-                $result[] = $item;
+                array_splice($array, $i, 0, $insert);
+                return $array;
             }
         }
-        return $result;
+        return $array;
     }
 
     /**
      * テーブルのカラムにコンポーネントを追加する
      *
      * @param Table $table 追加する対象のテーブル
-     * @param string|null $before 挿入位置のカラム名
+     * @param string $before 挿入位置のカラム名
      * @param Column[] $columns 追加するカラムの配列
      * @return Table 追加後のテーブル
      */
-    public static function addTableColumns(Table $table, ?string $before, array $columns): Table
+    public static function addTableColumns(Table $table, string $before, array $columns): Table
     {
         return $table->columns(self::insertComponents($table->getColumns(), $before, $columns));
     }
@@ -90,11 +87,11 @@ class Module
      * テーブルにフィルターを追加する
      *
      * @param Table $table 追加する対象のテーブル
-     * @param string|null $before 挿入位置のフィルター名
+     * @param string $before 挿入位置のフィルター名
      * @param array $filters 追加するフィルターの配列
      * @return Table 追加後のテーブル
      */
-    public static function addTableFilters(Table $table, ?string $before, array $filters): Table
+    public static function addTableFilters(Table $table, string $before, array $filters): Table
     {
         return $table->filters(self::insertComponents($table->getFilters(), $before, $filters));
     }
@@ -103,11 +100,11 @@ class Module
      * テーブルにアクションを追加する
      *
      * @param Table $table 追加する対象のテーブル
-     * @param string|null $before 挿入位置のアクション名
+     * @param string $before 挿入位置のアクション名
      * @param Action[] $actions 追加するアクションの配列
      * @return Table 追加後のテーブル
      */
-    public static function addTableActions(Table $table, ?string $before, array $actions): Table
+    public static function addTableActions(Table $table, string $before, array $actions): Table
     {
         return $table->actions(self::insertComponents($table->getActions(), $before, $actions));
     }
@@ -116,11 +113,11 @@ class Module
      * フォームにコンポーネントを追加する
      *
      * @param Form $form 追加する対象のフォーム
-     * @param string|null $before 挿入位置のコンポーネント名
+     * @param string $before 挿入位置のコンポーネント名
      * @param Component[] $components 追加するコンポーネントの配列
      * @return Form 追加後のフォームかテーブル
      */
-    public static function addFormComponents(Form $form, ?string $before, array $components): Form
+    public static function addFormSchema(Form $form, string $before, array $components): Form
     {
         return $form->components(self::insertComponents($form->getComponents(true), $before, $components));
     }
