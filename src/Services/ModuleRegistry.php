@@ -9,7 +9,7 @@ use Throwable;
 
 class ModuleRegistry
 {
-    protected Collection $modules;
+    protected ?Collection $modules = null;
 
     /**
      * リソースモジュールを登録する
@@ -40,6 +40,9 @@ class ModuleRegistry
      */
     public function apply(string $resource, Form|Table $parent): Form|Table
     {
+        if ($this->modules == null) {
+            return $parent;
+        }
         $method = $parent instanceof Form ? 'form' : 'table';
         return $this->modules
             ->filter(fn($module) => $module::getResource() == $resource)
