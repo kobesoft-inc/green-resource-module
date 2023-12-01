@@ -22,35 +22,35 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot(): void
     {
         /**
-         * @class Form
-         * @method Form addSchema(string $before, array $components)
+         * @mixins \Filament\Forms\Form
+         * @method Form addSchema(array $components, ?string $before, ?string $after)
          */
-        Form::macro('addSchema', function ($before, $components) {
-            return Module::addFormSchema($this, $before, $components);
+        Form::macro('addSchema', function (array $components, ?string $before, ?string $after) {
+            return Module::addFormSchema($this, $components, $before, $after);
         });
 
         /**
-         * @class Table
-         * @method Form addColumns(string $before, array $components)
+         * @mixins \Filament\Tables\Table
+         * @method Form addColumns(array $components, ?string $before, ?string $after)
          */
-        Table::macro('addColumns', function ($before, $components) {
-            return Module::addTableColumns($this, $before, $components);
+        Table::macro('addColumns', function (array $components, ?string $before, ?string $after) {
+            return Module::addTableColumns($this, $components, $before, $after);
         });
 
         /**
-         * @class Table
-         * @method Form addFilters(string $before, array $components)
+         * @mixins \Filament\Tables\Table
+         * @method Form addFilters(array $components, ?string $before, ?string $after)
          */
-        Table::macro('addFilters', function ($before, $components) {
-            return Module::addTableFilters($this, $before, $components);
+        Table::macro('addFilters', function (array $components, ?string $before, ?string $after) {
+            return Module::addTableFilters($this, $components, $before, $after);
         });
 
         /**
-         * @class Table
-         * @method Form addActions(string $before, array $components)
+         * @mixins \Filament\Tables\Table
+         * @method Form addActions(array $components, ?string $before, ?string $after)
          */
-        Table::macro('addActions', function ($before, $components) {
-            return Module::addTableActions($this, $before, $components);
+        Table::macro('addActions', function (array $components, ?string $before, ?string $after) {
+            return Module::addTableActions($this, $components, $before, $after);
         });
     }
 }
