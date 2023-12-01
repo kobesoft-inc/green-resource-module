@@ -6,6 +6,7 @@ use Closure;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Green\ResourceModule\Facades\ModuleRegistry;
 
 class Module
 {
