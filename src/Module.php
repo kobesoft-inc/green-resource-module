@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Table;
+use RuntimeException;
 
 class Module
 {
@@ -36,28 +37,47 @@ class Module
     }
 
     /**
-     * コンポーネントの配列から、カラム名が一致するコンポーネントを検索する
+     * コンポーネントを挿入する
      *
-     * @param mixed $array コンポーネントの配列
-     * @param ?string $before 挿入位置のID(nullなら先頭のコンポーネントを検索)
+     * @param mixed $array 対象のコンポーネントの配列
+     * @param ?string $before 挿入位置のIDまたは名前(nullなら最後に追加)
      * @param array $insert 挿入するコンポーネントの配列
-     * @return array 検索結果のコンポーネントの配列
+     * @return array 結果のコンポーネントの配列
      */
-    private static function insertBefore(array $array, ?string $before, array $insert): array
+    private static function insertComponents(array $array, ?string $before, array $insert): array
     {
+        if ($before == null) {
+            return $array + $insert;
+        }
         foreach ($array as $index => $component) {
             if ($component instanceof Component) {
                 if ($children = $component->getChildComponents()) {
-                    $component->childComponents(self::insertBefore($children, $before, $insert));
+                    $component->childComponents(self::insertComponents($children, $before, $insert));
                 }
             }
-            if ($before == null ||
-                (method_exists($component, 'getId') && $component->getId() == $before) ||
-                (method_exists($component, 'getName') && $component->getName() == $before)) {
+            if (self::getComponentIdOrName($component) == $before) {
                 return array_splice($array, $index, $insert);
             }
         }
         return $array;
+    }
+
+    /**
+     * コンポーネントのIDまたは名前を取得する
+     *
+     * @param mixed $component
+     * @return string コンポーネントのIDまたは名前
+     * @throws RuntimeException
+     */
+    private static function getComponentIdOrName(mixed $component): string
+    {
+        if (method_exists($component, 'getId')) {
+            return $component->getId();
+        } elseif (method_exists($component, 'getName')) {
+            return $component->getName();
+        } else {
+            throw new RuntimeException('コンポーネントにIDまたは名前が定義されていません。');
+        }
     }
 
     /**
@@ -70,7 +90,7 @@ class Module
      */
     public static function tableColumns(Table $table, ?string $before, array $columns): Table
     {
-        return $table->columns(self::insertBefore($table->getColumns(), $before, $columns));
+        return $table->columns(self::insertComponents($table->getColumns(), $before, $columns));
     }
 
     /**
@@ -83,7 +103,7 @@ class Module
      */
     public static function tableFilters(Table $table, ?string $before, array $filters): Table
     {
-        return $table->filters(self::insertBefore($table->getFilters(), $before, $filters));
+        return $table->filters(self::insertComponents($table->getFilters(), $before, $filters));
     }
 
     /**
@@ -96,7 +116,7 @@ class Module
      */
     public static function tableActions(Table $table, ?string $before, array $actions): Table
     {
-        return $table->actions(self::insertBefore($table->getActions(), $before, $actions));
+        return $table->actions(self::insertComponents($table->getActions(), $before, $actions));
     }
 
     /**
@@ -109,6 +129,6 @@ class Module
      */
     public static function formComponents(Form $form, ?string $before, array $components): Form
     {
-        return $form->components(self::insertBefore($form->getComponents(), $before, $components));
+        return $form->components(self::insertComponents($form->getComponents(), $before, $components));
     }
 }
