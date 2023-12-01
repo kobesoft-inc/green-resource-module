@@ -26,7 +26,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
          * @method Form addSchema(string $before, array $components)
          */
         Form::macro('addSchema', function ($before, $components) {
-            return Module::addFormComponents($this, $before, $components);
+            return Module::addFormSchema($this, $before, $components);
         });
 
         /**
