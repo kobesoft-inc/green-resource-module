@@ -1,0 +1,21 @@
+{
+    "name": "kobesoft/green-resource-module",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Green\\ResourceModule\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "filament/filament": "^3.0-stable",
+        "laravel/framework": "^10.10"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Green\\ResourceModule\\ServiceProvider"
+            ]
+        }
+    }
+}
