@@ -45,7 +45,7 @@ class ModuleRegistry
         }
         $method = $parent instanceof Form ? 'form' : 'table';
         return $this->modules
-            ->filter(fn($module) => $module::getResource() == $resource)
+            ->filter(fn($module) => $module::resource == $resource)
             ->sortBy(fn($module) => $module::order)
             ->reduce(fn($parent, $module) => $module::$method($parent), $parent);
     }
