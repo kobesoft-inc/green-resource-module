@@ -56,7 +56,7 @@ class Module
                 }
             }
             if ($component->getName() == $before) {
-                array_splice($array, $index, $insert);
+                array_splice($array, $index, 0, $insert);
                 return $array;
             }
         }
