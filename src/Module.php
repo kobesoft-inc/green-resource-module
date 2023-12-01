@@ -49,18 +49,21 @@ class Module
         if ($before == null) {
             return $array + $insert;
         }
-        foreach ($array as $index => $component) {
+        $result = [];
+        foreach ($array as $component) {
             if ($component instanceof Component) {
                 if ($children = $component->getChildComponents()) {
                     $component->childComponents(self::insertComponents($children, $before, $insert));
                 }
             }
-            if ($component->getName() == $before) {
-                array_splice($array, $index, 0, $insert);
-                return $array;
+            if (method_exists($component, 'getName') && $component->getName() == $before) {
+                foreach ($insert as $item) {
+                    $result[] = $item;
+                }
             }
+            $result[] = $component;
         }
-        return $array;
+        return $result;
     }
 
     /**
