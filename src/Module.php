@@ -88,7 +88,7 @@ class Module
      * @param Column[] $columns 追加するカラムの配列
      * @return Table 追加後のテーブル
      */
-    public static function tableColumns(Table $table, ?string $before, array $columns): Table
+    public static function addTableColumns(Table $table, ?string $before, array $columns): Table
     {
         return $table->columns(self::insertComponents($table->getColumns(), $before, $columns));
     }
@@ -101,7 +101,7 @@ class Module
      * @param array $filters 追加するフィルターの配列
      * @return Table 追加後のテーブル
      */
-    public static function tableFilters(Table $table, ?string $before, array $filters): Table
+    public static function addTableFilters(Table $table, ?string $before, array $filters): Table
     {
         return $table->filters(self::insertComponents($table->getFilters(), $before, $filters));
     }
@@ -114,7 +114,7 @@ class Module
      * @param Action[] $actions 追加するアクションの配列
      * @return Table 追加後のテーブル
      */
-    public static function tableActions(Table $table, ?string $before, array $actions): Table
+    public static function addTableActions(Table $table, ?string $before, array $actions): Table
     {
         return $table->actions(self::insertComponents($table->getActions(), $before, $actions));
     }
@@ -127,7 +127,7 @@ class Module
      * @param Component[] $components 追加するコンポーネントの配列
      * @return Form 追加後のフォームかテーブル
      */
-    public static function formComponents(Form $form, ?string $before, array $components): Form
+    public static function addFormComponents(Form $form, ?string $before, array $components): Form
     {
         return $form->components(self::insertComponents($form->getComponents(), $before, $components));
     }
