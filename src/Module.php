@@ -55,29 +55,12 @@ class Module
                     $component->childComponents(self::insertComponents($children, $before, $insert));
                 }
             }
-            if (self::getComponentIdOrName($component) == $before) {
-                return array_splice($array, $index, $insert);
+            if ($component->getName() == $before) {
+                array_splice($array, $index, $insert);
+                return $array;
             }
         }
         return $array;
-    }
-
-    /**
-     * コンポーネントのIDまたは名前を取得する
-     *
-     * @param mixed $component
-     * @return string コンポーネントのIDまたは名前
-     * @throws RuntimeException
-     */
-    private static function getComponentIdOrName(mixed $component): string
-    {
-        if (method_exists($component, 'getId')) {
-            return $component->getId();
-        } elseif (method_exists($component, 'getName')) {
-            return $component->getName();
-        } else {
-            throw new RuntimeException('コンポーネントにIDまたは名前が定義されていません。');
-        }
     }
 
     /**
@@ -129,6 +112,6 @@ class Module
      */
     public static function addFormComponents(Form $form, ?string $before, array $components): Form
     {
-        return $form->components(self::insertComponents($form->getComponents(), $before, $components));
+        return $form->components(self::insertComponents($form->getComponents(true), $before, $components));
     }
 }
