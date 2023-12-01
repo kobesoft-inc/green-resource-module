@@ -23,33 +23,33 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         /**
          * @mixins \Filament\Forms\Form
-         * @method Form addSchema(array $components, ?string $before, ?string $after)
+         * @method Form addSchema(array $components, ?string $before = null, ?string $after = null)
          */
-        Form::macro('addSchema', function (array $components, ?string $before, ?string $after) {
+        Form::macro('addSchema', function (array $components, ?string $before = null, ?string $after = null) {
             return Module::addFormSchema($this, $components, $before, $after);
         });
 
         /**
          * @mixins \Filament\Tables\Table
-         * @method Form addColumns(array $components, ?string $before, ?string $after)
+         * @method Form addColumns(array $components, ?string $before = null, ?string $after = null)
          */
-        Table::macro('addColumns', function (array $components, ?string $before, ?string $after) {
+        Table::macro('addColumns', function (array $components, ?string $before = null, ?string $after = null) {
             return Module::addTableColumns($this, $components, $before, $after);
         });
 
         /**
          * @mixins \Filament\Tables\Table
-         * @method Form addFilters(array $components, ?string $before, ?string $after)
+         * @method Form addFilters(array $components, ?string $before = null, ?string $after = null)
          */
-        Table::macro('addFilters', function (array $components, ?string $before, ?string $after) {
+        Table::macro('addFilters', function (array $components, ?string $before = null, ?string $after = null) {
             return Module::addTableFilters($this, $components, $before, $after);
         });
 
         /**
          * @mixins \Filament\Tables\Table
-         * @method Form addActions(array $components, ?string $before, ?string $after)
+         * @method Form addActions(array $components, ?string $before = null, ?string $after = null)
          */
-        Table::macro('addActions', function (array $components, ?string $before, ?string $after) {
+        Table::macro('addActions', function (array $components, ?string $before = null, ?string $after = null) {
             return Module::addTableActions($this, $components, $before, $after);
         });
     }
