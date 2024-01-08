@@ -5,6 +5,7 @@ Copyright &copy; Kobesoft, Inc. All rights reserved.
 ## 概要
 
 FilamentPHPのResource定義を、別のファイルに分離するためのライブラリです。
+プラグインでResource定義をして、アプリケーションで拡張をする用途を想定しています。
 下記の機能を実装しています。
 
 - テーブルとフォームの拡張
